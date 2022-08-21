@@ -1,40 +1,42 @@
 <template>
+
+  <div class="black-bg" v-if="modal == true">
+    <div class='white-bg'>
+      <img :src="rooms[click].image" class="room-img" />
+      <h4>{{rooms[click].title}}</h4>
+      <p>{{rooms[click].price}}원</p>
+      <button @click="modal = false">닫기</button>
+    </div>
+  </div>
+
+
   <div class="menu">
     <a v-for="(a, i) in menu" :key='i'>{{ a }}{{ i }}</a>
   </div>
+  <div v-for="(a, i) in rooms" :key="i">
+    <img :src="a.image" @click="modal = true; click=i " class="room-img" />
+    <h4>{{ a.title }}</h4>
+    <p>{{ a.price }}원</p>
+  </div>
 
-  <!-- <div v-for="(a,i) in products" :key="i">
-    <h4>{{ products[i] }}</h4>
-    <p>{{price[i]}}만원</p>
-  </div> -->
-  <div>
-    <h4>{{ products[0] }}</h4>
-    <p>60만원</p>
-    <button @click="count[0]++">허위매물신고</button> <span>신고수 : {{ count[0] }}</span>
-  </div>
-  <div>
-    <h4>{{ products[1] }}</h4>
-    <p>70만원</p>
-    <button @click="count[1]+=1">허위매물신고</button> <span>신고수 : {{ count[1] }}</span>
-  </div>
-  <div>
-    <h4>{{ products[2] }}</h4>
-    <p>80만원</p>
-    <button @click="count[2]+=1">허위매물신고</button> <span>신고수 : {{ count[2] }}</span>
-  </div>
 </template>
-
 <script>
+//npm run serve 
 
+import data from './assets/data.js';
+data
 
 export default {
   name: 'App',
-  data() {//데이터 보관함
+  data() {//데이터 보관함 리액트에서의 state임.
     return {
-      count: [0,0,0],
+      click:0,
+      rooms: data,
+      modal: true,
+      count: [0, 0, 0],
       price: [60, 70, 80],
       menu: ['Home', 'Shop', 'About'],
-      products: ['역삼동원룸', '천호동원룸', '마포구원룸']
+      products: ['역삼동원룸', '천호동원룸', '마포구원룸'],
     }
   },
   methods: {
@@ -55,6 +57,29 @@ export default {
   margin-top: 60px;
 }
 
+body {
+  margin: 0;
+}
+
+div {
+  box-sizing: border-box;
+}
+
+.black-bg {
+  width: 100%;
+  height: 100%;
+  background: black(0, 0, 0, 0.5);
+  position: fixed;
+  padding: 20px;
+}
+
+.white-bg {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
 .menu {
   background: darkslateblue;
   padding: 15px;
@@ -64,5 +89,10 @@ export default {
 .menu a {
   color: white;
   padding: 10px;
+}
+
+.room-img {
+  width: 100%;
+  margin-top: 40px;
 }
 </style>
