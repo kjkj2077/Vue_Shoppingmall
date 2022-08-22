@@ -1,49 +1,62 @@
 <template>
-
-  <div class="black-bg" v-if="modal == true">
-    <div class='white-bg'>
-      <img :src="rooms[click].image" class="room-img" />
-      <h4>{{rooms[click].title}}</h4>
-      <p>{{rooms[click].price}}원</p>
-      <button @click="modal = false">닫기</button>
-    </div>
-  </div>
-
+  <!-- prop 보낼때 작명="문자자료", :작명="숫자자료" -->
+  <Transition name="fade">
+    <TheModal :rooms='rooms' :click="click" :modal="modal" @closeModal="modal = false" />
+  </Transition>
 
   <div class="menu">
     <a v-for="(a, i) in menu" :key='i'>{{ a }}{{ i }}</a>
   </div>
-  <div v-for="(a, i) in rooms" :key="i">
-    <img :src="a.image" @click="modal = true; click=i " class="room-img" />
-    <h4>{{ a.title }}</h4>
-    <p>{{ a.price }}원</p>
-  </div>
-
+  <button @click="priceSort">가격순정렬</button>
+  <button @click="priceSort_r">역순정렬</button>
+  <TheDiscount v-if="showDiscount == true" />
+  <TheList @openModal='modal = true, click = $event' :rooms='rooms' />
 </template>
 <script>
 //npm run serve 
 
 import data from './assets/data.js';
-data
+import TheDiscount from './Discount.vue';
+import TheModal from './TheModal.vue';
+import TheList from './TheList.vue';
+
 
 export default {
   name: 'App',
   data() {//데이터 보관함 리액트에서의 state임.
     return {
-      click:0,
+      showDiscount: true,
+      click: 0,
       rooms: data,
-      modal: true,
-      count: [0, 0, 0],
-      price: [60, 70, 80],
+      modal: false,
       menu: ['Home', 'Shop', 'About'],
-      products: ['역삼동원룸', '천호동원룸', '마포구원룸'],
     }
   },
   methods: {
     increase() {
       this.count++ //함수안에서 데이터 쓸땐 this.데이터명
-    }
-  }
+    },
+    priceSort() {
+      this.rooms.sort(function (a, b) {
+        return a.price - b.price
+      })
+    },
+    priceSort_r() {
+      this.rooms.sort(function (a, b) {
+        return b.price - a.price
+      })
+    },
+  },
+  components: {
+    TheDiscount,
+    TheModal,
+    TheList
+  },
+  mounted() { //마운트됐을때 실행.
+    setTimeout(() => {
+      this.showDiscount = false //this쓸꺼면 에로우펑션써라.
+    }, 2000)
+  },
 }
 </script>
 
@@ -55,6 +68,30 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  transition: all 1.2s;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-leave-active {
+  transition: all 1.2s;
+}
+
+.fade-leave-to {
+  opacity: 0;
 }
 
 body {
@@ -75,7 +112,7 @@ div {
 
 .white-bg {
   width: 100%;
-  background: white;
+  background: whitesmoke;
   border-radius: 8px;
   padding: 20px;
 }
@@ -92,7 +129,15 @@ div {
 }
 
 .room-img {
-  width: 100%;
+  width: 80%;
+  height: 80%;
   margin-top: 40px;
+}
+
+.discount {
+  background: gainsboro;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 10px;
 }
 </style>
